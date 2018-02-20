@@ -31,7 +31,7 @@ public class Server implements MessageHandler {
 		// etape3
 		server.recieveFile();
 		//etape4
-		server.recieveTextMessgae();
+		server.recieveTextMessage();
 	}
 
 	public Socket clientConnected() {
