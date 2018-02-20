@@ -19,7 +19,7 @@ public class Client {
 
 	private Socket socket;
 	private Socket socket2020;
-	
+
 	public static void main(String[] args) {
 		Client client = new Client();
 		client.sendMessage("I am Ahmed Boushaba the BOSS !");
@@ -30,7 +30,7 @@ public class Client {
 		client.sendTextMessage(new TextMessage("get_time"));
 		//client.recieveResultFromTextMessage(client.getSocket2020());
 	}
-	
+
 	public Client() {
 		try {
 			socket = new Socket(InetAddress.getLocalHost(), 2018);
@@ -62,11 +62,11 @@ public class Client {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void sendTextMessage(TextMessage message) {
 		try {
 			socket2020 = new Socket(InetAddress.getLocalHost(), 2020);
-			ObjectOutputStream objOutstream = new ObjectOutputStream(socket2020.getOutputStream()) ;
+			ObjectOutputStream objOutstream = new ObjectOutputStream(socket2020.getOutputStream());
 			objOutstream.writeObject(message);
 			objOutstream.flush();
 			objOutstream.close();
@@ -75,7 +75,7 @@ public class Client {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void recieveResultFromTextMessage(Socket socket)  {
 		try {
 			BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -86,6 +86,7 @@ public class Client {
 			e.printStackTrace();
 		}
 	}
+
 	public void sendFile() {
 		try {
 			Socket socket = new Socket(InetAddress.getLocalHost(), 2019);
@@ -112,9 +113,4 @@ public class Client {
 	public Socket getSocket2020() {
 		return socket2020;
 	}
-	
-	
-	
-	
-
 }
