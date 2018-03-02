@@ -1,0 +1,110 @@
+/* Projet Java by Ahmed BOUSHABA - info@boushaba.fr */
+
+/* Etape 01 */
+TIC-JAV2 - Heritage
+-------------------
+Etape 1
+Créer une classe Message qui contiendra:
+Les champs: id, time (on utilisera le timestamp), from et to (String)
+Une méthode readMessage et une messageInfo
+La méthode messageInfo doit afficher tous les champs de la classe et leurs valeurs
+Etape 2
+Créer un programme App qui affichera "Hello world!" et qui créera un objet de type Message.
+Etape 3
+Définissez un constructeur dans la classe Message qui aura deux arguments from et to, et qui mettra à jour l'heure de la création du message en utilisant le timestamp (à vous de trouver la solution ! ;) ).
+Etape 4
+Créer une nouvelle classe TextMessage qui héritera de votre classe précédente et qui aura deux champs en plus: "objet du message et contenu". A vous de choisir les bons types
+Créer une seconde classe FileMessage qui héritera de votre classe Message et qui aura en plus un champ description et un champ name
+Etape 5
+Nous n'allons plus accéder aux champs directement, mais par leurs accesseurs (getters et setters).
+Mettez tous les champs de vos classes en privé, et générez les getteurs et les setteurs pour toutes vos classes à l'aide de votre IDE.
+
+/* Etape 02 */
+TIC-JAV2 - Socket
+-----------------
+Etape 1
+Créer une classe Client et une classe Server
+Le client et le serveur doivent chacun avoir une méthode statique main. On fera en sorte que les deux puissent se lancer indépendamment
+Au niveau de votre classe Client, écrire une méthode qui va créer un socket en fonction d'une adresse et d'un port
+Etape 2
+Au niveau de votre client, définissez une méthode qui permettra d'envoyer message de type primitif dans le socket.
+Exemple :
+public static void sendMessage(String message) {
+	// Votre implémentation
+}Copy
+Etape 3
+Ecrire une méthode qui renverra un socket une fois qu'un client s'est connecté. Vous pouvez écrire un message dans la console qui vous notifiera sur la connexion du client
+Ecrire une méthode recieveMessage qui va lire les chaînes de caractères à partir du socket et qui les affichera à l'écran
+Exemple :
+public Socket clientConnected() {
+	/**
+	* Implémentation de votre méthode
+	*/
+
+	return socket;
+}Copy
+Etape 4
+Maintenant que vous avez implémenté le client et le serveur, vous pouvez faire un premier test.
+Lancer votre serveur, puis votre client. Envoyez un message "my_first_message" à votre serveur, et affichez-le à l'écran.
+
+/* Etape 03 */
+TIC-JAV2 - Traitement des données
+---------------------------------
+Etape 1
+Votre serveur peut être en 3 états différents:
+Réception des objets de type TextMessage
+Réception des objets de type FileMessage
+Eteint
+Créer une énumération qui permettra de distinguer si votre serveur change d'état.
+Etape 2
+Ajouter un champ state qui nous informera sur l'état de votre serveur. Il pourra être dans l'un des 3 états
+Créer une interface MessageHandler qui aura une méthode qui renverra l'un des trois états possibles (que vous avez définis dans votre enumeration) en fonction du message passé en paramètre. Faire en sorte que votre serveur implémente cette méthode. Définir la méthode au niveau de votre serveur de telle sorte à ce que la méthode ne puisse traiter qu'un certain nombre de messages
+Exemple :
+Si on passe "send_file", la méthode retournera l'état typeFileMessage, si c'est "shutdown" alors elle renverra shutDownState et le serveur arrêtera son fonctionnement tout en fermant les sockets actifs.
+/**
+* Methode qui renvoi l'état du serveur en fonction des messages reçus * @param message
+* @return
+*/
+public ServerState handleMessage(String message) {
+/**
+* A vous d'implémenter
+*/
+return ServerState.recieving_file;
+}Copy
+Etape 3
+Pour envoyer et recevoir les objets Java à travers les sockets, vous pouvez utiliser ObjectOutputStream et ObjectInputStream.
+Dans votre client, écrire une méthode sendTextMessage(TextMessage tm), qui prend en paramètre un objet de type TextMessage et qui envoie l'objet dans le socket du client
+Dans votre serveur, écrivez une méthode recieveTextMessage qui permettra de recevoir un objet de type TextMessage et le sauvegarder dans une liste (ArrayList par exemple) au niveau du serveur
+Exemple :
+/**
+* Méthode utilise outputStream du socket et ObjectOutputStream pour
+* envoyer le message * @param message
+*/
+public void sendTextMessage(TextMessage message) {
+	/**
+	* Votre implémentation
+	*/
+}Copy
+Etape 4
+Au niveau de la racine de votre projet. Ajouter un fichier texte "file01.txt" qui va contenir du texte que vous voulez.
+Créer une méthode dans votre client qui permettra d'envoyer les fichiers dans le socket
+Créer une méthode au niveau de votre serveur qui va pouvoir réceptionner les fichiers depuis le socket et les sauvegarder au niveau de votre projet (avec le nom que vous voulez). Attention, si le serveur reçoit plusieurs fichiers, chaque fichier doit avoir un nom différent
+
+/* Etape 04 */
+
+TIC-JAV2 - Protocol final
+-------------------------
+Etape 1
+Le client doit envoyer un objet de type textMessage dont le contenu du message doit contenir le nom de la commande que vous voulez exécuter. Maintenant, votre serveur ne pourra recevoir que les objets et les fichiers. Le contenu du message maintenant doit suivre un certain protocole. Ces messages là vont correspondre aux actions qui devront être exécutées par le serveur.
+Message (commande à exécuter)	Action du serveur
+get_nb_received_txt_messages	Le serveur renverra dans le socket le nombre de messages totaux reçus (sous forme d'un textMessage ou bien d'une chaîne de caractères)
+get_time	Renverra l'heure et la date (sous forme d'un textMessage ou bien d'une chaîne de caractères)
+receive_file*	Une fois que le serveur a reçu ce message, le message suivant qu'il va recevoir sera un fichier. On peut changer la valeur de l'état du serveur une fois qu'il a reçu ce type de message
+get_files_names	Le serveur renvoi un message (ex: chaîne de caractères), qui contient la liste de tous les fichiers sauvegardés sur le serveur
+download_file:+ "filename"	Le client envoi le message en passant le nom du fichier. Si ce fichier existe, le serveur doit envoyer ce fichier au client
+shut_down	Fermera le socket du serveur
+Depuis votre client, envoyer un message (objet) au serveur, dont le contenu du message est l'une des commandes du protocole. Une fois que le message est envoyé, le client devra attendre la réponse du serveur.
+Définissez une méthode au niveau de votre serveur, qui va lire le contenu du message reçu et executer l'action correspondante en fonction du protocole.
+* Mettez à jour votre méthode handleMessage afin qu'elle prenne en compte les commandes du protocole et mette à jour l'état du serveur.
+À chaque fois que le serveur reçoit un message, il vérifie d'abord son contenu puis agit en fonction du protocole. Exemple: S'il reçoit un receive_file, son action suivante sera de recevoir le fichier.
+Votre client et votre serveur doivent donc communiquer en utilisant ce protocole.
